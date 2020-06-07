@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JS Reference VS Copy</title>
+</head>
+<body>
+
+  <script>
+  // 1. start with strings, numbers and booleans, aka primitive types
+    let age = 100;
+    let age2 = age;
+    // console.log(age, age2); //logs out "100 100"
+    age = 200;
+    // console.log(age, age2); //logs out "200 100". (?) the value of age is copied into age2 at the same time as age variable is declared. If you change the value of the original one, it's NOT GOING TO UPDATE the copy. This is how it works for PRIMITIVE TYPES
+
+    // same thing here
+    let name = 'olga';
+    let name2 = name;
+    // console.log(name,name2);
+    name = 'volha'
+    // console.log(name,name2);
+
+
+
+  // 2. Let's say we have an array
+    const players = ['Olga', 'Adam', 'Kendrick', 'Ophelia'];
+
+    // and we want to make a copy of it.
+    const team = players;
+    // console.log(players, team); // both values are the same
+
+    // players[3] = 'Ada'; // this updates not only the original, but the copy!!
+    // console.log(players, team); // both values are the same, as opposed to only the original being changed
+
+    // You might think we can just do something like this:
+    // team[4] = 'Sirin'; // we expect to see only the copy updated
+    
+    // however what happens when we update that array?
+    // console.log('Original', players, `Copy`,team); // the original is also updated!
+
+    // now here is the problem!
+    // oh no - we have edited the original array too!
+    // Why? It's because that is an array REFERENCE, not an array COPY. They both point to the same array!
+
+
+  // 3. So, how do we fix this? We take a copy instead!
+
+    // METHOD 1
+    const team2 = players.slice(); // by not passing any arguments into slice(), we allow it to copy the entire array into a new one
+    team2[4] = 'Willow'; // the copy is updated without affecting the original
+    // console.log('Original', players, `Copy2`, team2); 
+
+    // METHOD 2: create a new array and concat the old one in
+    const team3 = [].concat(players); // concat merges arrays, so in this case it merges a new empty array and players array
+    team3[4] = 'Sanem';
+    // console.log('Original', players, `Copy3`, team3);
+
+    // METHOD 3: use the new ES6 Spread
+    const team4 = [...players];
+    team4[4] = 'Essie';
+    // console.log('Original', players, `Copy4`, team4);
+
+    // METHOD 4: 
+    const team5 = Array.from(players);
+    team5[4] = 'Agnes';
+
+    // now when we update it, the original one isn't changed
+
+  // 4.The same thing goes for objects, let's say we have a person object
+
+    //  with Objects
+    const person = {
+      name: 'Olga',
+      age: 26,
+    };
+
+    // and think we make a copy:
+    const friend = person;
+    friend.faveColor = 'purple';
+    // console.log(friend, person);
+
+    // how do we take a copy instead?
+    // the arguments are an empty object (that will be overwritten), the object we wish to clone, and optional object containing properties we wish to add or change
+    const friend2 = Object.assign({}, person, {faveColor: 'teal', age: 27});
+
+    // We will hopefully soon see the object ...spread
+    // It's a thing in 2020!!!
+    const personCopy = { ...person };
+
+    // Things to note - this is only 1 level deep - both for Arrays and Objects. lodash has a cloneDeep method, but you should think twice before using it.
+    const olga = {
+      name: 'olga',
+      age: 26,
+      social: {
+        twitter: 'OlgaFilCodes',
+        github: 'Olcatsy',
+      }
+    }
+
+    const olgaCopy = Object.assign({}, olga, {attitude: 'great'}); //only the copy is changed
+    // olgaCopy.social.twitter = 'meow'; // this will still update the original object!
+    // console.log(olga,olgaCopy);
+
+    // same thing with spread, it seems
+    const olgaF = { ... olga};
+    olgaF.social.twitter = 'meow meow';
+    console.log(olga, olgaF);
+
+  </script>
+
+</body>
+</html>

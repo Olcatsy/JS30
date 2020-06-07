@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mouse Shadow</title>
+</head>
+<body>
+
+  <div class="hero">
+    <h1 contenteditable>🔥WOAH!</h1>
+  </div>
+
+  <style>
+  html {
+    color: black;
+    font-family: sans-serif;
+    font-size: 62.5%;
+  }
+
+  body {
+    margin: 0;
+    font-size: 3rem;
+  }
+
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
+  }
+
+  h1 {
+    text-shadow: 10px 10px 0 rgba(0,0,0,0.5);
+  }
+  </style>
+
+<script>
+  const hero = document.querySelector('.hero');
+  const text = hero.querySelector('h1');
+  // how many pixels should the shadow be stretched at most
+  const walk = 100;
+
+
+  function shadow(e) {
+    // grab hero's dimensions
+    // const height = hero.offsetHeight;
+    // const width = hero.offsetWidth;
+    // OR
+    const { offsetWidth: width, offsetHeight: height } = hero;
+
+    //grab info about where the cursor is
+    let { offsetX: x, offsetY: y } = e;
+
+    //NOTE: if we hover over a child of the element (hero in this case) we get offset coordinates for the child! This probably has to do with event bubbling/delegation
+    // we need to normalize x and y
+    if (this !== e.target) { // 'this' is the element the event listener is on; e.target is whatever the cursor is hovered on
+    // to do that we add the target element's offset relative to the parent element
+      x = x + e.target.offsetLeft;
+      y = y + e.target.offsetTop;
+    }
+
+    // i don't fully get the math but essentially it returns pixel values for our shadow size
+    const xWalk = Math.round(x / width * walk) - (walk / 2);
+    const yWalk = Math.round(y / width * walk) - (walk / 2);
+
+    text.style.textShadow = `
+      ${xWalk}px ${yWalk}px 0 rgba(127,63,191,0.5),
+      ${xWalk * -1}px ${yWalk * -1}px 0 rgba(191,63,127,0.5)`;
+  }
+
+  hero.addEventListener('mousemove', shadow);
+</script>
+</body>
+</html>

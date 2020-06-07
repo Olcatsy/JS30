@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HTML5 Canvas</title>
+</head>
+<body>
+<canvas id="draw" width="800" height="800"></canvas>
+<script>
+
+  const canvas = document.querySelector('#draw');
+  const ctx = canvas.getContext('2d');
+
+  let isDrawing = false;
+  // ending coordinates for a line
+  let lastX = 0;
+  let lastY = 0;
+  let hue = 0; // stores hue of the stroke
+  let direction = true;
+
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  // color of the stroke
+  ctx.strokeStyle = 'orchid';
+  // ensures the line is smooth
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  // ctx.globalCompositeOperation = 'lighten';
+  ctx.lineWidth = 7;
+  
+
+// DRAWING FUNCTIONS
+  const draw = (e) => {
+    if (!isDrawing) return; //stop the function if isDrawing is false (not moused down)
+
+    ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+    ctx.beginPath() // start defining the line
+    ctx.moveTo(lastX, lastY); // start at the last known coordinate
+    ctx.lineTo(e.offsetX, e.offsetY); // end at the event coordinate
+    ctx.stroke(); // stroke actually renders the line
+
+    lastX = e.offsetX;
+    lastY = e.offsetY;
+
+    hue++; // increments the hue value, so the color of the stroke gradually changes color as the user draws
+    if(hue >= 360) {
+      hue = 0;
+    }
+
+    // if (ctx.lineWidth >= 100 || ctx.lineWidth <= 1) {
+    //   // if the line width gets too large or too small, the direction is flipped
+    //   direction = !direction;
+    // }
+    // if(direction) {
+    //   ctx.lineWidth++;
+    //   console.log('++');
+    // } else {
+    //   ctx.lineWidth--;
+    // }
+  }
+
+
+// EVENT LISTENERS 
+  canvas.addEventListener('mousedown',(e) => {
+    isDrawing = true;
+    // update starting coordinates to event coordinate
+    [lastX, lastY] = [e.offsetX, e.offsetY];
+  });
+  canvas.addEventListener('mousemove', draw);
+  canvas.addEventListener('mouseup', () => isDrawing = false);
+  canvas.addEventListener('mouseleave', () => isDrawing = false);
+
+</script>
+
+<style>
+  html, body {
+    margin: 0;
+  }
+
+  canvas {
+    background: black;
+  }
+
+</style>
+
+
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Key Detection</title>
+  <script type="text/javascript" src="https://www.cornify.com/js/cornify.js"></script>
+</head>
+<body>
+<script>
+  const pressed = [];
+  const secretCode = 'olga' 
+  
+  window.addEventListener('keyup', (e) => {
+    pressed.push(e.key);
+    // trim the array to the secret code length
+    pressed.splice(-secretCode.length-1, pressed.length - secretCode.length); //slices the first character off the array as the user presses keys
+    // as soon as all the right keys are pressed in right order, this code block will run
+    if (pressed.join('').includes(secretCode)) {
+      cornify_add();
+    }
+    console.log(pressed);
+  })
+</script>
+</body>
+</html>

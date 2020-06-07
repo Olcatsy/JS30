@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HTML5 Canvas</title>
+</head>
+<body>
+<canvas id="draw" width="800" height="800"></canvas>
+<script>
+const canvas = document.querySelector('#draw');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+ctx.strokeStyle = '#BADA55';
+ctx.lineJoin = 'round';
+ctx.lineCap = 'round';
+ctx.lineWidth = 20;
+// ctx.globalCompositeOperation = 'multiply';
+
+let isDrawing = false;
+let lastX = 0;
+let lastY = 0;
+let hue = 290;
+let direction = true;
+
+
+function startDrawing(e) {
+  isDrawing = true;
+  console.log(e.type);
+  let x = 0;
+  let y = 0;
+
+  if (e.type === 'touchstart') {
+    const r = canvas.getBoundingClientRect(); // returns the elements size and position relative to viewport
+    //clientX is coordinate of touch relative to the viewport. r.left is the canvas' left offset relative to viewport
+    x = e.touches[0].clientX - r.left;
+    console.log(x, 'touch');
+    y = e.touches[0].clientY - r.top; // same as above but the offset is from the top
+  } else {
+    x = e.offsetX;
+    console.log(x, 'mouse');
+    y = e.offsetY;
+  }
+
+  [lastX, lastY] = [x, y];
+}
+function draw(e) {
+  if (!isDrawing) return; // stop the fn from running when they are not moused down
+  ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+  let x = 0;
+  let y = 0;
+
+  if (e.type === 'touchmove') {
+    const r = canvas.getBoundingClientRect(); // returns the elements size and position relative to viewport
+    //clientX is coordinate of touch relative to the viewport. r.left is the canvas' left offset relative to viewport
+    x = e.touches[0].clientX - r.left; 
+    y = e.touches[0].clientY - r.top; // same as above but the offset is from the top
+  } else {
+    x = e.offsetX;
+    y = e.offsetY;
+  }
+  ctx.beginPath();
+  // start from
+  ctx.moveTo(lastX, lastY);
+  // go to
+  ctx.lineTo(x, y);
+  ctx.stroke();
+  [lastX, lastY] = [x, y];
+}
+
+
+canvas.addEventListener('mousedown', startDrawing);
+// canvas.addEventListener('mouseenter', startDrawing);
+canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mouseup', () => isDrawing = false);
+// canvas.addEventListener('mouseout', () => isDrawing = false);
+
+
+canvas.addEventListener('touchstart', startDrawing);
+canvas.addEventListener('touchmove', draw);
+canvas.addEventListener('touchend', () => isDrawing = false);
+</script>
+
+<style>
+  html, body {
+    margin: 0;
+  }
+</style>
+
+</body>
+</html>
